@@ -1,0 +1,38 @@
+!pip install jovian opendatasets --upgrade --quiet
+
+dataset_url = 'https://www.kaggle.com/datasets/nowke9/ipldata'
+
+import opendatasets as od
+od.download(dataset_url)
+data_dir = './ipldata'
+import os
+os.listdir(data_dir)
+project_name = "ipl-data-analysis"
+import pandas as pd
+data_raw_df_1 = pd.read_csv('ipldata/matches.csv')
+!pip install jovian --upgrade -q
+import jovian
+jovian.commit(project=project_name)
+data_raw_df_1.shape
+data_raw_df_1.columns
+data_raw_df_1.info()
+data_raw_df_1
+data_raw_df_1[data_raw_df_1.result== 'no result']
+data_raw_df_1[data_raw_df_1.result == 'tie']
+data_raw_df_1.drop(['id','umpire3'],axis = 1,inplace = True)
+data_raw_df_1
+data_raw_df_1.set_index('date',inplace = True)
+data_raw_df_1
+data_raw_df_1.info()
+data_raw_df_1.info()
+data_raw_df_1.describe()
+missing_values = data_raw_df_1.isnull().sum()
+print(missing_values)
+missing_city_dates = data_raw_df_1[data_raw_df_1.city.isnull() == True]
+missing_city_dates 
+missing_winner_dates = data_raw_df_1[data_raw_df_1.winner.isnull() == True]
+missing_winner_dates
+missing_umpire1_dates = data_raw_df_1[data_raw_df_1.umpire1.isnull() == True]
+missing_umpire1_dates
+import jovian
+jovian.commit()
