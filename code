@@ -34,5 +34,124 @@ missing_winner_dates = data_raw_df_1[data_raw_df_1.winner.isnull() == True]
 missing_winner_dates
 missing_umpire1_dates = data_raw_df_1[data_raw_df_1.umpire1.isnull() == True]
 missing_umpire1_dates
-import jovian
-jovian.commit()
+
+import seaborn as sns
+import matplotlib
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+sns.set_style('darkgrid')
+matplotlib.rcParams['font.size'] = 14
+matplotlib.rcParams['figure.figsize'] = (9, 5)
+matplotlib.rcParams['figure.facecolor'] = '#00000000'
+
+data_raw_df_1.result.unique()
+data_raw_df_1.result.describe()
+
+different_results_value = data_raw_df_1.result.value_counts()
+different_results_value
+
+colors = sns.color_palette('bright')[0:5]
+plt.figure(figsize=(50, 6))
+#creating pie chart
+plt.pie(different_results_value, labels = different_results_value.index, colors = colors, autopct='%.0f%%')
+plt.show();
+
+data_raw_df_1.venue.unique()
+
+different_venue_value = data_raw_df_1.venue.value_counts()
+
+plt.figure(figsize=(10,20))
+plot_venue = sns.barplot(y=different_venue_value.index, x=different_venue_value);
+
+data_raw_df_1.winner.describe()
+
+data_raw_df_1.winner.unique()
+
+data_raw_df_1['winner'].replace({'Deccan Chargers': 'Sunrisers Hyderabad', 'Rising Pune Supergiant': 'Rising Pune Supergiants', 'Delhi Daredevils': 'Delhi Capitals', 'Pune Warriors': 'Rising Pune Supergiants'},inplace = True)
+data_raw_df_1['team1'].replace({'Deccan Chargers': 'Sunrisers Hyderabad', 'Rising Pune Supergiant': 'Rising Pune Supergiants', 'Delhi Daredevils': 'Delhi Capitals', 'Pune Warriors': 'Rising Pune Supergiants'},inplace = True)
+data_raw_df_1['team2'].replace({'Deccan Chargers': 'Sunrisers Hyderabad', 'Rising Pune Supergiant': 'Rising Pune Supergiants', 'Delhi Daredevils': 'Delhi Capitals', 'Pune Warriors': 'Rising Pune Supergiants'},inplace = True)
+data_raw_df_1['toss_winner'].replace({'Deccan Chargers': 'Sunrisers Hyderabad', 'Rising Pune Supergiant': 'Rising Pune Supergiants', 'Delhi Daredevils': 'Delhi Capitals', 'Pune Warriors': 'Rising Pune Supergiants'},inplace = True)
+
+different_winner_value = data_raw_df_1.winner.value_counts()
+different_winner_value
+
+plt.figure(figsize=(10,10))
+plt.xticks(rotation=75)
+plot_venue = sns.barplot(x=different_winner_value.index, y=different_winner_value);
+
+data_1 = data_raw_df_1.umpire1
+data_1
+
+data_2 = data_raw_df_1.umpire2
+data_2
+
+final_umpire_data = pd.concat([data_1,data_2])
+final_umpire_data
+
+plt.figure(figsize=(25,10))
+plt.rcParams['font.size'] = '25'
+plt.xlabel('Name of Umpire', fontsize=35)
+plt.ylabel('Numbers of Matches', fontsize=35)
+plt.legend(['Umpires'])
+plt.title('Most Frequently Recruited Umpires')
+plt.xticks(rotation=90)
+plt.plot(final_umpire_data.value_counts().head(15),'o--b');
+
+data_toss_stats_win = data_raw_df_1[data_raw_df_1.winner == data_raw_df_1.toss_winner].toss_winner
+data_count_wins = data_toss_stats_win.value_counts()
+data_count_wins
+
+data_toss_stats_loss = data_raw_df_1[data_raw_df_1.winner != data_raw_df_1.toss_winner].toss_winner
+data_count_loss = data_toss_stats_loss.value_counts()
+data_count_loss
+
+fig, axes = plt.subplots(1,2,figsize=(16, 8))
+plt.subplots_adjust(left=0.1,
+                    right=0.9, 
+                    wspace=0.5, 
+                    hspace=6)
+
+axes[0].set_xticklabels(labels=data_count_wins.index, rotation=90)
+sns.barplot(x=data_count_wins.index, y=data_count_wins, ax=axes[0]);
+axes[0].set_xlabel('Name Of Teams')
+axes[0].set_ylabel('No. of Wins After Winning The Toss')
+
+
+
+axes[1].set_xticklabels(labels=data_count_loss.index, rotation=90);
+axes[1].plot_venue = sns.barplot(x=data_count_loss.index, y=data_count_loss);
+axes[1].set_xlabel('Name Of Teams')
+axes[1].set_ylabel('No. of Losses After Winning The Toss');
+
+win_rate = data_raw_df_1.winner == data_raw_df_1.toss_winner
+win_percentage = win_rate.value_counts()
+win_percentage
+
+label = ['Win %', 'Loss %']
+
+plt.figure(figsize=(12,6))
+plt.title('Is it true that winning the coin toss leads to winning games?')
+plt.pie(win_percentage,labels=label,autopct='%1.1f%%', startangle=180);
+
+fielding_f = data_raw_df_1[data_raw_df_1.win_by_wickets != 0]
+fielding_f
+
+plt.figure(figsize=(12,6))
+plt.hist(fielding_f['win_by_wickets'])
+plt.xlabel('No. Of Wickets')
+plt.ylabel('Number Of Matches Won')
+plt.show()
+
+m_o_m = data_raw_df_1.player_of_match.value_counts()
+m_o_m.describe()
+
+m_o_m_15 = m_o_m[:15]
+plt.figure(figsize=(12,16))
+plt.xticks(rotation=75)
+
+plt.title('Top 15 players who won maxmimum no. of times Man of the Match title')
+sns.barplot(x=m_o_m_15.index,y= m_o_m_15);
+plt.xlabel('Name Of Players')
+plt.ylabel('No. Of Times Won Man Of The Match Award');
+
